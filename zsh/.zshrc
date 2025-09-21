@@ -1,4 +1,4 @@
-ZSH_CUSTOM=$USER/.zsh-custom
+ZSH_CUSTOM=$HOME/.zsh-custom
 
 export ZSH="/Users/im/.oh-my-zsh"
 
