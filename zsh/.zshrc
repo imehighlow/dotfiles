@@ -14,6 +14,7 @@ alias python=python3
 alias vimo="cd '/Users/im/.obsidian/main' && nvim"
 alias cdo="cd  '/Users/im/.obsidian/main'"
 alias t="tmux"
+alias ll="ls -alh"
 EDITOR=nvim
 export PATH=$PATH:/Users/im/Library/Python/3.8/bin:/opt/bin:/Users/im/.local/bin
 
@@ -23,3 +24,4 @@ export LDFLAGS="-L/opt/homebrew/lib $LDFLAGS"
 export CPPFLAGS="-I/opt/homebrew/include $CPPFLAGS"
 source <(fzf --zsh)
 eval "$(zoxide init --cmd cd zsh)"
+
