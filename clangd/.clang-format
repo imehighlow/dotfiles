@@ -1,0 +1,79 @@
+# Clang-format configuration for C and C++ development
+# Egyptian braces, left-aligned pointers, 4-space indentation
+
+BasedOnStyle: LLVM
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 100
+
+# Egyptian braces (braces on same line)
+BreakBeforeBraces: Attach
+
+# Pointer and reference alignment (int* a, not int *a)
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+# Function and statement formatting
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortBlocksOnASingleLine: false
+
+# Spacing
+SpaceAfterCStyleCast: true
+SpaceAfterTemplateKeyword: true
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 1
+SpacesInAngles: false
+SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+
+# Alignment
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignOperands: true
+AlignTrailingComments: true
+
+# Constructor formatting
+BreakConstructorInitializers: BeforeColon
+BreakConstructorInitializersBeforeComma: false
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerIndentWidth: 4
+
+# Indentation
+ContinuationIndentWidth: 4
+IndentCaseLabels: true
+IndentPPDirectives: None
+IndentWrappedFunctionNames: false
+
+# C++ specific
+Cpp11BracedListStyle: true
+NamespaceIndentation: None
+
+# Includes
+IncludeBlocks: Regroup
+SortIncludes: true
+SortUsingDeclarations: true
+
+# Comments
+ReflowComments: true
+FixNamespaceComments: true
+
+# Line breaks
+BreakStringLiterals: true
+MaxEmptyLinesToKeep: 1
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# Penalties (control when to break lines)
+PenaltyBreakAssignment: 2
+PenaltyBreakBeforeFirstCallParameter: 1
+PenaltyBreakComment: 300
+PenaltyBreakFirstLessLess: 120
+PenaltyBreakString: 1000
+PenaltyExcessCharacter: 1000000
+PenaltyReturnTypeOnItsOwnLine: 200
