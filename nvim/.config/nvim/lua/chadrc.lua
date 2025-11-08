@@ -31,12 +31,12 @@ M.base46 = {
             { "  Mappings", "Spc c h", "NvCheatsheet" },
         },
     },
-    conceallevel = 1
+    conceallevel = 1,
 
     -- hl_override = {
     -- 	Comment = { italic = true },
     -- 	["@comment"] = { italic = true },
-    -- },
+   -- },
 }
 
 return M
