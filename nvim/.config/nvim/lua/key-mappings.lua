@@ -1,5 +1,47 @@
 local map = vim.keymap.set
+
+map("n", "gd", require("telescope.builtin").lsp_definitions, bufopts) -- Go to Definition (Telescope picker)
+map("n", "gD", vim.lsp.buf.declaration, bufopts) -- Go to Declaration (Direct jump, optional)
+map("n", "gi", require("telescope.builtin").lsp_implementations, bufopts) -- Go to Implementation (Telescope picker)
+map("n", "gt", vim.lsp.buf.type_definition, bufopts) -- Go to Type Definition (Direct jump)
+map("n", "gr", require("telescope.builtin").lsp_references, bufopts) -- Find References (Telescope picker)
+map("n", "<C-k>", vim.lsp.buf.signature_help, bufopts) -- Show function signature help
+
+-- Actions
+map("n", "<leader>rn", vim.lsp.buf.rename, bufopts) -- Rename symbol
+map("n", "<leader>ca", vim.lsp.buf.code_action, bufopts) -- Code Actions (e.g. fix errors, refactor)
+
+-- Hover/Documentation
+-- map("n", "K", vim.lsp.buf.hover, bufopts) -- Show documentation/hover info
+-- map("n", "K", vim.lsp.buf.hover, { desc = "Show hover docs/info"})
+
+
+-- Diagnostics (Error/Warning navigation)
+map("n", "[d", vim.diagnostic.goto_prev, bufopts) -- Jump to previous diagnostic
+map("n", "]d", vim.diagnostic.goto_next, bufopts) -- Jump to next diagnostic
+
+-- Use Telescope for a floating window of all diagnostics
+map("n", "<leader>d", require("telescope.builtin").diagnostics, { desc = "telescope diagnostics list"})
+
+-- Other useful actions
+map("n", "<leader>f", function()
+	vim.lsp.buf.format({ async = true })
+end, bufopts)
+
+-- nvim tree
 map("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle file tree" })
+
+-- copy relative path
+vim.api.nvim_create_user_command("CopyRelPath", function()
+	vim.fn.setreg("+", vim.fn.expand("%"))
+	print("Copied relative path to clipboard!")
+end, {})
+vim.api.nvim_set_keymap(
+	"n",
+	"<leader>y",
+	":CopyRelPath<CR>",
+	{ noremap = true, silent = true, desc = "Copy relative path" }
+)
 
 -- formatting
 map("n", "<leader>fm", vim.lsp.buf.format, { desc = "Format code" })
@@ -7,7 +49,7 @@ map("n", "<leader>fm", vim.lsp.buf.format, { desc = "Format code" })
 -- buffers switch
 map("n", "<S-h>", "<cmd>bprev<cr>", { desc = "Previous buffer", silent = true })
 map("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer", silent = true })
-map("n", "<leader>x", "<cmd>bd<CR>", { desc = "Close buffer"})
+map("n", "<leader>x", "<cmd>bd<CR>", { desc = "Close buffer" })
 
 -- git
 map("n", "<leader>gh", ":Gitsigns preview_hunk<CR>", { desc = "Show git hunk" })
@@ -62,6 +104,38 @@ map(
 
 -- treesj
 map("n", "<leader>tt", "<cmd>TSJToggle<CR>", { desc = "Toggle treesj" })
-map("n", "<leader>tj", "<cmd>TSJJoin<CR>", { desc = "Join code block"})
-map("n", "<leader>ts", "<cmd>TSJSplit<CR>", { desc = "Split code block"})
+map("n", "<leader>tj", "<cmd>TSJJoin<CR>", { desc = "Join code block" })
+map("n", "<leader>ts", "<cmd>TSJSplit<CR>", { desc = "Split code block" })
 
+-- hover 
+map("n", "K", function()
+  require("hover").open()
+end, { desc = "hover.nvim (open)" })
+
+map("n", "gK", function()
+  require("hover").enter()
+end, { desc = "hover.nvim (enter)" })
+
+map("n", "<C-p>", function()
+  require("hover").switch("previous")
+end, { desc = "hover.nvim (previous source)" })
+
+map("n", "<C-n>", function()
+  require("hover").switch("next")
+end, { desc = "hover.nvim (next source)" })
+
+map("n", "K", function()
+  require("hover").open()
+end, { desc = "hover.nvim (open)" })
+
+map("n", "gK", function()
+  require("hover").enter()
+end, { desc = "hover.nvim (enter)" })
+
+map("n", "<C-p>", function()
+  require("hover").switch("previous")
+end, { desc = "hover.nvim (previous source)" })
+
+map("n", "<C-n>", function()
+  require("hover").switch("next")
+end, { desc = "hover.nvim (next source)" })

@@ -6,9 +6,11 @@ return {
 				lua = { "stylua" },
 				css = { "prettier" },
 				ts = { "prettier" },
+				js = { "prettier" },
+				svelte = { "prettier" },
 				html = { "prettier" },
 				yaml = { "prettier" },
-				python = { "black " },
+				python = { "isort" },
 			},
 		}
 
