@@ -1,9 +1,3 @@
-vim.cmd("set expandtab")
-vim.cmd("set tabstop=4")
-vim.cmd("set softtabstop=4")
-vim.cmd("set shiftwidth=4")
-
-
 vim.o.hlsearch = false
 
   -- Make line numbers default
@@ -15,6 +9,7 @@ vim.o.mouse = "a"
 --
 -- Set the indentation to 4 spaces
 vim.o.tabstop = 2
+vim.o.softtabstop=4
 vim.o.shiftwidth = 2
 vim.o.expandtab = true
 

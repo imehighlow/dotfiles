@@ -15,21 +15,13 @@ map("n", "<leader>ca", vim.lsp.buf.code_action, bufopts) -- Code Actions (e.g. f
 -- map("n", "K", vim.lsp.buf.hover, bufopts) -- Show documentation/hover info
 -- map("n", "K", vim.lsp.buf.hover, { desc = "Show hover docs/info"})
 
-
 -- Diagnostics (Error/Warning navigation)
-map("n", "[d", vim.diagnostic.goto_prev, bufopts) -- Jump to previous diagnostic
-map("n", "]d", vim.diagnostic.goto_next, bufopts) -- Jump to next diagnostic
+map("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic message" })
+map("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })
+map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
 
 -- Use Telescope for a floating window of all diagnostics
-map("n", "<leader>d", require("telescope.builtin").diagnostics, { desc = "telescope diagnostics list"})
-
--- Other useful actions
-map("n", "<leader>f", function()
-	vim.lsp.buf.format({ async = true })
-end, bufopts)
-
--- nvim tree
-map("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle file tree" })
+map("n", "<leader>d", require("telescope.builtin").diagnostics, { desc = "telescope diagnostics list" })
 
 -- copy relative path
 vim.api.nvim_create_user_command("CopyRelPath", function()
@@ -56,11 +48,6 @@ map("n", "<leader>gh", ":Gitsigns preview_hunk<CR>", { desc = "Show git hunk" })
 map("n", "<leader>h", ":Gitsigns preview_hunk<CR>", { desc = "Show git hunk" })
 map("n", "<leader>gn", ":Gitsigns next_hunk<CR>", { desc = "Go to the next hunk" })
 
--- diagnostic
-map("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic message" })
-map("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })
-map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
-
 -- splits
 map("n", "<leader>'", "<cmd>split<CR>", { silent = true, desc = "Split horizontally" })
 map("n", "<leader>v", "<cmd>vsplit<CR>", { silent = true, desc = "Split vertically" })
@@ -70,7 +57,6 @@ map({ "n", "v", "i" }, "<c-h>", "<cmd>TmuxNavigateLeft<cr>", { silent = true, de
 map({ "n", "v", "i" }, "<c-j>", "<cmd>TmuxNavigateDown<cr>", { silent = true, desc = "Tmux Down" })
 map({ "n", "v", "i" }, "<c-k>", "<cmd>TmuxNavigateUp<cr>", { silent = true, desc = "Tmux Up" })
 map({ "n", "v", "i" }, "<c-l>", "<cmd>TmuxNavigateRight<cr>", { silent = true, desc = "Tmux Right" })
-map({ "n", "v", "i" }, "<c-\\>", "<cmd>TmuxNavigatePrevious<cr>", { silent = true, desc = "Tmux Previous" })
 
 -- obsidian stuff
 map("n", "<leader>ot", "<cmd>ObsidianTags<CR>", { desc = "Search obsidian tags" })
@@ -81,9 +67,10 @@ map("n", "<leader>on", "<cmd>ObsidianNew<CR>", { desc = "Create new note" })
 map("n", "<leader>og", "<cmd>ObsidianFollowLink<CR>", { desc = "Follow obsidian link" })
 map("n", "<leader>oi", "<cmd>ObsidianPasteImg<CR>", { desc = "Paste image from clipboard" })
 map("n", "<leader>op", "<cmd>ObsidianWorkspace<CR>", { desc = "See obsidian vaults" })
+map("n", "<leader>od", "<cmd>ObsidianToday<CR>", { desc = "Go to daily note" })
 
 -- nvimtree
-map("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle window" })
+map("n", "<C-n>", "<cmd>NvimTreeFindFileToggle<CR>", { noremap = true, silent = true })
 
 -- telescope
 map("n", "<leader>fw", "<cmd>Telescope live_grep<CR>", { desc = "telescope live grep" })
@@ -107,35 +94,31 @@ map("n", "<leader>tt", "<cmd>TSJToggle<CR>", { desc = "Toggle treesj" })
 map("n", "<leader>tj", "<cmd>TSJJoin<CR>", { desc = "Join code block" })
 map("n", "<leader>ts", "<cmd>TSJSplit<CR>", { desc = "Split code block" })
 
--- hover 
+-- hover
 map("n", "K", function()
-  require("hover").open()
+	require("hover").open()
 end, { desc = "hover.nvim (open)" })
 
 map("n", "gK", function()
-  require("hover").enter()
+	require("hover").enter()
 end, { desc = "hover.nvim (enter)" })
 
 map("n", "<C-p>", function()
-  require("hover").switch("previous")
+	require("hover").switch("previous")
 end, { desc = "hover.nvim (previous source)" })
 
-map("n", "<C-n>", function()
-  require("hover").switch("next")
-end, { desc = "hover.nvim (next source)" })
-
 map("n", "K", function()
-  require("hover").open()
+	require("hover").open()
 end, { desc = "hover.nvim (open)" })
 
 map("n", "gK", function()
-  require("hover").enter()
+	require("hover").enter()
 end, { desc = "hover.nvim (enter)" })
 
 map("n", "<C-p>", function()
-  require("hover").switch("previous")
+	require("hover").switch("previous")
 end, { desc = "hover.nvim (previous source)" })
 
-map("n", "<C-n>", function()
-  require("hover").switch("next")
-end, { desc = "hover.nvim (next source)" })
+-- toggleterm
+vim.keymap.set("n", "<C-\\>", "<cmd>ToggleTerm<CR>", { silent = true })
+vim.keymap.set("t", "<C-\\>", "<cmd>ToggleTerm<CR>", { silent = true })
