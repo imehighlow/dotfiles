@@ -66,11 +66,27 @@ return {
 				update_in_insert = false,
 			})
 
+			-- cpp header-source switch
+			vim.api.nvim_create_autocmd("LspAttach", {
+				callback = function(ev)
+					local client = vim.lsp.get_client_by_id(ev.data.client_id)
+					if not client or client.name ~= "clangd" then
+						return
+					end
+
+					vim.keymap.set(
+						"n",
+						"<leader>gc",
+						"<cmd>LspClangdSwitchSourceHeader<CR>",
+						{ buffer = ev.buf, desc = "Clangd: switch source/header" }
+					)
+				end,
+			})
 			-- local capabilities = require("cmp_nvim_lsp").default_capabilities()
 			local servers = require("lsp-servers")
 			for _, server in ipairs(servers) do
-				-- vim.lsp.config(server, { capabilities = capabilities })
-				vim.lsp.config(server, {})
+				local config = servers.configs[server] or {}
+				vim.lsp.config(server, config)
 				vim.lsp.enable(server)
 			end
 

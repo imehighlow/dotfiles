@@ -1,6 +1,6 @@
 ZSH_CUSTOM=$HOME/.zsh-custom
 
-export ZSH="/Users/im/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 ZSH_THEME="minimal"
 
@@ -11,26 +11,23 @@ alias vim=nvim
 alias c=clear
 alias py=python3
 alias python=python3
-alias vimo="cd '/Users/im/.obsidian/main' && nvim"
-alias cdo="cd  '/Users/im/.obsidian/main'"
+alias vimo="cd \"$HOME/.obsidian/main\" && nvim"
+alias cdo="cd \"$HOME/.obsidian/main\""
 alias t="tmux"
 alias ll="ls -alh"
-EDITOR=nvim
-export PATH=$PATH:/Users/im/Library/Python/3.8/bin:/opt/bin:/Users/im/.local/bin
+export EDITOR=nvim
+export PATH="$PATH:$HOME/Library/Python/3.8/bin:/opt/bin:$HOME/.local/bin"
 
-export CPATH="/opt/homebrew/include:$CPATH"
-export LIBRARY_PATH="/opt/homebrew/lib:$LIBRARY_PATH"
+export CPATH="/opt/homebrew/include${CPATH:+:$CPATH}"
+export LIBRARY_PATH="/opt/homebrew/lib${LIBRARY_PATH:+:$LIBRARY_PATH}"
 export LDFLAGS="-L/opt/homebrew/lib $LDFLAGS"
 export CPPFLAGS="-I/opt/homebrew/include $CPPFLAGS"
-source <(fzf --zsh)
-eval "$(zoxide init --cmd cd zsh)"
+command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init --cmd cd zsh)"
+command -v uv >/dev/null 2>&1 && eval "$(uv generate-shell-completion zsh)"
 
-
-# Added by Antigravity
-export PATH="/Users/im/.antigravity/antigravity/bin:$PATH"
 export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
-
 export NVM_DIR="$HOME/.nvm"
+
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 

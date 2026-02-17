@@ -1,0 +1,66 @@
+# =========
+# Theme
+# =========
+theme = dark:TokyoNight Storm,light:TokyoNight Day
+window-theme = system
+
+# =========
+# Font
+# =========
+font-family = "JetBrains Mono"
+font-family = "Symbols Nerd Font Mono"
+font-size = 14
+font-feature = -calt, -liga, -dlig
+
+# =========
+# Layout / feel
+# =========
+window-padding-x = 1
+window-padding-y = 1
+
+cursor-style = block
+cursor-style-blink = false
+shell-integration-features = no-cursor
+
+# IMPORTANT: must be ONLY the value, no extra text
+scroll-to-bottom = no-keystroke,no-output
+
+mouse-scroll-multiplier = 1
+term = xterm-256color
+
+# =========
+# macOS-specific: Option key behavior + titlebar/tabs
+# =========
+macos-option-as-alt = left
+macos-titlebar-style = tabs
+window-new-tab-position = current
+
+# =========
+# Bell
+# =========
+bell-features = attention,title
+
+# =========
+# Keybindings (iTerm-ish)
+# =========
+keybind = cmd+c=copy_to_clipboard
+keybind = cmd+v=paste_from_clipboard
+
+keybind = cmd+t=new_tab
+keybind = cmd+n=new_window
+keybind = cmd+w=close_tab
+
+keybind = cmd+shift+left_bracket=previous_tab
+keybind = cmd+shift+right_bracket=next_tab
+
+keybind = cmd+d=new_split:right
+keybind = cmd+shift+d=new_split:down
+
+# keybind = alt+left=text:"\x1bb"
+# keybind = alt+right=text:"\x1bf"
+
+keybind = cmd+left=text:"\x01"
+keybind = cmd+right=text:"\x05"
+
+# Let macOS handle Window → Fill (⌃⌥↩)
+keybind = ctrl+alt+enter=ignore

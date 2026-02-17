@@ -1,6 +1,6 @@
 vim.o.hlsearch = false
 
-  -- Make line numbers default
+-- Make line numbers default
 vim.wo.number = true
 vim.wo.relativenumber = true
 
@@ -8,10 +8,21 @@ vim.wo.relativenumber = true
 vim.o.mouse = "a"
 --
 -- Set the indentation to 4 spaces
-vim.o.tabstop = 2
-vim.o.softtabstop=4
-vim.o.shiftwidth = 2
+vim.o.tabstop = 4
+vim.o.softtabstop = 4
+vim.o.shiftwidth = 4
 vim.o.expandtab = true
+
+-- Use 2-space indentation for some langs
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "javascript", "javascriptreact", "typescript", "typescriptreact", "lua", "svelte" },
+	callback = function()
+		vim.bo.tabstop = 2
+		vim.bo.softtabstop = 2
+		vim.bo.shiftwidth = 2
+		vim.bo.expandtab = true
+	end,
+})
 
 -- Needed for nvim-tree
 vim.g.loaded_netrw = 1
@@ -56,4 +67,3 @@ vim.g.ansible_unindent_after_newline = 1
 vim.g.ansible_attribute_highlight = "a"
 vim.g.ansible_name_highlight = "b"
 vim.g.ansible_extra_keywords_highlight = 1
-

@@ -1,4 +1,5 @@
 local map = vim.keymap.set
+local bufopts = { noremap = true, silent = true }
 
 map("n", "gd", require("telescope.builtin").lsp_definitions, bufopts) -- Go to Definition (Telescope picker)
 map("n", "gD", vim.lsp.buf.declaration, bufopts) -- Go to Declaration (Direct jump, optional)
@@ -36,12 +37,30 @@ vim.api.nvim_set_keymap(
 )
 
 -- formatting
-map("n", "<leader>fm", vim.lsp.buf.format, { desc = "Format code" })
+-- map("n", "<leader>fm", vim.lsp.buf.format, { desc = "Format code" })
+map({ "n", "v" }, "<leader>fm", function()
+	require("conform").format({
+		async = true,
+		lsp_fallback = false,
+	})
+end, { desc = "Format with Conform" })
 
 -- buffers switch
 map("n", "<S-h>", "<cmd>bprev<cr>", { desc = "Previous buffer", silent = true })
 map("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer", silent = true })
-map("n", "<leader>x", "<cmd>bd<CR>", { desc = "Close buffer" })
+map("n", "<leader>x", function() -- GPT generated stuff, allows to close buffers properly
+	local win = vim.api.nvim_get_current_win()
+	local buf = vim.api.nvim_get_current_buf()
+	for _, b in ipairs(vim.api.nvim_list_bufs()) do
+		if b ~= buf and vim.api.nvim_buf_is_loaded(b) and vim.bo[b].buflisted then
+			vim.api.nvim_win_set_buf(win, b)
+			break
+		end
+	end
+	vim.schedule(function()
+		pcall(vim.api.nvim_buf_delete, buf, { force = true })
+	end)
+end, { silent = true, desc = "Close buffer" })
 
 -- git
 map("n", "<leader>gh", ":Gitsigns preview_hunk<CR>", { desc = "Show git hunk" })
@@ -120,5 +139,4 @@ map("n", "<C-p>", function()
 end, { desc = "hover.nvim (previous source)" })
 
 -- toggleterm
-vim.keymap.set("n", "<C-\\>", "<cmd>ToggleTerm<CR>", { silent = true })
-vim.keymap.set("t", "<C-\\>", "<cmd>ToggleTerm<CR>", { silent = true })
+vim.keymap.set({ "n", "t" }, "<C-t>", "<cmd>ToggleTerm<CR>", { silent = true })

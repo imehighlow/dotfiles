@@ -5,15 +5,24 @@ return {
 			formatters_by_ft = {
 				lua = { "stylua" },
 				css = { "prettier" },
-				ts = { "prettier" },
-				js = { "prettier" },
+				typescript = { "prettier" },
+				javascript = { "prettier" },
+				typescriptreact = { "prettier" },
+				javascriptreact = { "prettier" },
 				svelte = { "prettier" },
 				html = { "prettier" },
 				yaml = { "prettier" },
-				python = { "isort" },
+				rust = { "rustfmt" },
+				toml = { "taplo" },
+				cpp = { "clang_format" },
+				python = {
+					"ruff_fix",
+					"ruff_format",
+					"ruff_organize_imports",
+				},
 			},
 		}
 
 		require("conform").setup(options)
-	end
+	end,
 }

@@ -10,6 +10,7 @@ return {
 					"c",
 					"cpp",
 					"lua",
+					"rust",
 					"vim",
 					"vimdoc",
 					"query",
@@ -21,6 +22,7 @@ return {
 					"svelte",
 					"html",
 					"css",
+					"toml",
 				},
 				highlight = {
 					enable = true,
