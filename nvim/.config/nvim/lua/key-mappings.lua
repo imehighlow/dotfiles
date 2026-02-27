@@ -1,16 +1,19 @@
 local map = vim.keymap.set
 local bufopts = { noremap = true, silent = true }
+local function desc_opts(desc)
+	return vim.tbl_extend("force", bufopts, { desc = desc })
+end
 
-map("n", "gd", require("telescope.builtin").lsp_definitions, bufopts) -- Go to Definition (Telescope picker)
-map("n", "gD", vim.lsp.buf.declaration, bufopts) -- Go to Declaration (Direct jump, optional)
-map("n", "gi", require("telescope.builtin").lsp_implementations, bufopts) -- Go to Implementation (Telescope picker)
-map("n", "gt", vim.lsp.buf.type_definition, bufopts) -- Go to Type Definition (Direct jump)
-map("n", "gr", require("telescope.builtin").lsp_references, bufopts) -- Find References (Telescope picker)
-map("n", "<C-k>", vim.lsp.buf.signature_help, bufopts) -- Show function signature help
+map("n", "gd", require("telescope.builtin").lsp_definitions, desc_opts("Go to definition")) -- Go to Definition (Telescope picker)
+map("n", "gD", vim.lsp.buf.declaration, desc_opts("Go to declaration")) -- Go to Declaration (Direct jump, optional)
+map("n", "gi", require("telescope.builtin").lsp_implementations, desc_opts("Go to implementation")) -- Go to Implementation (Telescope picker)
+map("n", "gt", vim.lsp.buf.type_definition, desc_opts("Go to type definition")) -- Go to Type Definition (Direct jump)
+map("n", "gr", require("telescope.builtin").lsp_references, desc_opts("Find references")) -- Find References (Telescope picker)
+map("n", "<leader>k", vim.lsp.buf.signature_help, desc_opts("Show signature help")) -- Show function signature help
 
 -- Actions
-map("n", "<leader>rn", vim.lsp.buf.rename, bufopts) -- Rename symbol
-map("n", "<leader>ca", vim.lsp.buf.code_action, bufopts) -- Code Actions (e.g. fix errors, refactor)
+map("n", "<leader>rn", vim.lsp.buf.rename, desc_opts("Rename symbol")) -- Rename symbol
+map("n", "<leader>ca", vim.lsp.buf.code_action, desc_opts("Code actions")) -- Code Actions (e.g. fix errors, refactor)
 
 -- Hover/Documentation
 -- map("n", "K", vim.lsp.buf.hover, bufopts) -- Show documentation/hover info
@@ -45,26 +48,8 @@ map({ "n", "v" }, "<leader>fm", function()
 	})
 end, { desc = "Format with Conform" })
 
--- buffers switch
-map("n", "<S-h>", "<cmd>bprev<cr>", { desc = "Previous buffer", silent = true })
-map("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer", silent = true })
-map("n", "<leader>x", function() -- GPT generated stuff, allows to close buffers properly
-	local win = vim.api.nvim_get_current_win()
-	local buf = vim.api.nvim_get_current_buf()
-	for _, b in ipairs(vim.api.nvim_list_bufs()) do
-		if b ~= buf and vim.api.nvim_buf_is_loaded(b) and vim.bo[b].buflisted then
-			vim.api.nvim_win_set_buf(win, b)
-			break
-		end
-	end
-	vim.schedule(function()
-		pcall(vim.api.nvim_buf_delete, buf, { force = true })
-	end)
-end, { silent = true, desc = "Close buffer" })
-
 -- git
 map("n", "<leader>gh", ":Gitsigns preview_hunk<CR>", { desc = "Show git hunk" })
-map("n", "<leader>h", ":Gitsigns preview_hunk<CR>", { desc = "Show git hunk" })
 map("n", "<leader>gn", ":Gitsigns next_hunk<CR>", { desc = "Go to the next hunk" })
 
 -- splits
@@ -89,7 +74,7 @@ map("n", "<leader>op", "<cmd>ObsidianWorkspace<CR>", { desc = "See obsidian vaul
 map("n", "<leader>od", "<cmd>ObsidianToday<CR>", { desc = "Go to daily note" })
 
 -- nvimtree
-map("n", "<C-n>", "<cmd>NvimTreeFindFileToggle<CR>", { noremap = true, silent = true })
+map("n", "<C-n>", "<cmd>NvimTreeFindFileToggle<CR>", { noremap = true, silent = true, desc = "Toggle nvim-tree" })
 
 -- telescope
 map("n", "<leader>fw", "<cmd>Telescope live_grep<CR>", { desc = "telescope live grep" })
@@ -126,17 +111,5 @@ map("n", "<C-p>", function()
 	require("hover").switch("previous")
 end, { desc = "hover.nvim (previous source)" })
 
-map("n", "K", function()
-	require("hover").open()
-end, { desc = "hover.nvim (open)" })
-
-map("n", "gK", function()
-	require("hover").enter()
-end, { desc = "hover.nvim (enter)" })
-
-map("n", "<C-p>", function()
-	require("hover").switch("previous")
-end, { desc = "hover.nvim (previous source)" })
-
 -- toggleterm
-vim.keymap.set({ "n", "t" }, "<C-t>", "<cmd>ToggleTerm<CR>", { silent = true })
+vim.keymap.set({ "n", "t" }, "<C-t>", "<cmd>ToggleTerm<CR>", { silent = true, desc = "Toggle terminal" })
