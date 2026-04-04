@@ -9,6 +9,13 @@ local servers = {
 }
 
 servers.configs = {
+	clangd = {
+		cmd = {
+			vim.fn.exepath("clangd"),
+			"--background-index",
+			"--query-driver=/opt/homebrew/bin/g++-15",
+		},
+	},
 	pyright = {
 		settings = {
 			python = {
