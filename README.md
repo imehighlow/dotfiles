@@ -1,3 +1,9 @@
+oh-my-zsh:
+```
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+```
+
 [zsh theme](https://github.com/subnixr/minimal?tab=readme-ov-file) install:
 ```
 git clone https://github.com/subnixr/minimal.git  ${ZSH_CUSTOM}/themes/minimal
@@ -17,4 +23,19 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:
 tmux plugins install:
 ```
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```
+
+## Ubuntu
+
+packages to install:
+```
+sudo apt install -y gh build-essential cmake unzip zsh fzf ripgrep nodejs npm
+```
+
+nvim on ubuntu:
+```
+sudo apt-get install software-properties-common
+sudo add-apt-repository ppa:neovim-ppa/unstable
+sudo apt-get update
+sudo apt-get install neovim
 ```
