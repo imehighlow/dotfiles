@@ -18,10 +18,10 @@ alias ll="ls -alh"
 export EDITOR=nvim
 export PATH="$PATH:$HOME/Library/Python/3.8/bin:/opt/bin:$HOME/.local/bin"
 
-export CPATH="/opt/homebrew/include${CPATH:+:$CPATH}"
-export LIBRARY_PATH="/opt/homebrew/lib${LIBRARY_PATH:+:$LIBRARY_PATH}"
-export LDFLAGS="-L/opt/homebrew/lib $LDFLAGS"
-export CPPFLAGS="-I/opt/homebrew/include $CPPFLAGS"
+export CPATH="/opt/homebrew/include"
+export LIBRARY_PATH="/opt/homebrew/lib"
+export LDFLAGS="-L/opt/homebrew/lib"
+export CPPFLAGS="-I/opt/homebrew/include"
 command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init --cmd cd zsh)"
 command -v uv >/dev/null 2>&1 && eval "$(uv generate-shell-completion zsh)"
 
