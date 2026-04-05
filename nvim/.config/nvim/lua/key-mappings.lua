@@ -92,6 +92,9 @@ map(
 	"<cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>",
 	{ desc = "telescope find all files" }
 )
+map("n", "<leader>b", function()
+	require("telescope.builtin").buffers({ initial_mode = "normal" })
+end, { desc = "telescope show opened buffers" })
 
 -- treesj
 map("n", "<leader>tt", "<cmd>TSJToggle<CR>", { desc = "Toggle treesj" })
