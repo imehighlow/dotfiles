@@ -93,7 +93,13 @@ map(
 	{ desc = "telescope find all files" }
 )
 map("n", "<leader>b", function()
-	require("telescope.builtin").buffers({ initial_mode = "normal" })
+	require("telescope.builtin").buffers({
+		initial_mode = "normal",
+		attach_mappings = function(_, map_telescope)
+			map_telescope("n", "d", require("telescope.actions").delete_buffer)
+			return true
+		end,
+	})
 end, { desc = "telescope show opened buffers" })
 
 -- treesj
