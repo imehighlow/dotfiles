@@ -21,8 +21,8 @@ return {
 		workspaces = {
 			{
 				name = "Main",
-				-- path = "/Users/im/Library/Mobile Documents/iCloud~md~obsidian/Documents/Main Vault",
-				path = "/Users/im/.obsidian/",
+				path = "/Users/im/Library/Mobile Documents/iCloud~md~obsidian/Documents/main",
+				-- path = "/Users/im/.obsidian/",
 			},
 		},
 		disable_frontmatter = true,

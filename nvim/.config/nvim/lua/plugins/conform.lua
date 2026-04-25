@@ -14,6 +14,7 @@ return {
 				yaml = { "prettier" },
 				rust = { "rustfmt" },
 				toml = { "taplo" },
+				cmake = { "cmake_format" },
 				cpp = { "clang_format" },
 				python = {
 					"ruff_fix",

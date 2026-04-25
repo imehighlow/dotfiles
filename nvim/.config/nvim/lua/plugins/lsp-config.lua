@@ -46,6 +46,8 @@ return {
 	{
 		"neovim/nvim-lspconfig",
 		config = function()
+			local capabilities = require("blink.cmp").get_lsp_capabilities()
+
 			-- Define the config using the new API
 			vim.diagnostic.config({
 				signs = {
@@ -86,6 +88,7 @@ return {
 			local servers = require("lsp-servers")
 			for _, server in ipairs(servers) do
 				local config = servers.configs[server] or {}
+				config.capabilities = vim.tbl_deep_extend("force", capabilities, config.capabilities or {})
 				vim.lsp.config(server, config)
 				vim.lsp.enable(server)
 			end

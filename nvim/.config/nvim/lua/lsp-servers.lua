@@ -4,11 +4,18 @@ local servers = {
 	"svelte",
 	"rust_analyzer",
 	"taplo",
+	"cmake",
 	"clangd",
 	"pyright",
 }
 
 servers.configs = {
+	cmake = {
+		init_options = {
+			buildDirectory = "build",
+			cmakeExecutable = vim.fn.exepath("cmake"),
+		},
+	},
 	clangd = {
 		cmd = {
 			vim.fn.exepath("clangd"),
