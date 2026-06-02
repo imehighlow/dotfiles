@@ -31,13 +31,15 @@ vim.opt.termguicolors = true
 
 -- Treesitter fold related stuff
 vim.o.foldmethod = "expr"
-vim.o.foldexpr = "nvim_treesitter#foldexpr()"
+vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.o.foldlevel = 99
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
 
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
 vim.o.clipboard = "unnamedplus"
-vim.o.foldenable = false
 
 -- Enable break indent
 vim.o.breakindent = true

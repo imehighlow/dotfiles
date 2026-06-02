@@ -65,6 +65,7 @@ ReflowComments: true
 FixNamespaceComments: true
 
 # Line breaks
+BreakTemplateDeclarations: Yes
 BreakStringLiterals: true
 MaxEmptyLinesToKeep: 1
 KeepEmptyLinesAtTheStartOfBlocks: false

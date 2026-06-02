@@ -22,6 +22,9 @@ servers.configs = {
 			"--background-index",
 			"--query-driver=/opt/homebrew/bin/g++-15",
 		},
+		init_options = {
+			fallbackFlags = { "-std=c++23" },
+		},
 	},
 	pyright = {
 		settings = {
