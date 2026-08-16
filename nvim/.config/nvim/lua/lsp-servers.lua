@@ -20,18 +20,9 @@ servers.configs = {
 		cmd = {
 			vim.fn.exepath("clangd"),
 			"--background-index",
-			"--query-driver=/opt/homebrew/bin/g++-15",
 		},
 		init_options = {
 			fallbackFlags = { "-std=c++23" },
-		},
-	},
-	pyright = {
-		settings = {
-			python = {
-				pythonPath = vim.env.VIRTUAL_ENV and (vim.env.VIRTUAL_ENV .. "/bin/python")
-					or vim.fn.exepath("python3"),
-			},
 		},
 	},
 }

@@ -24,9 +24,6 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
--- Needed for nvim-tree
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
 vim.opt.termguicolors = true
 
 -- Treesitter fold related stuff
@@ -68,3 +65,4 @@ vim.g.ansible_unindent_after_newline = 1
 vim.g.ansible_attribute_highlight = "a"
 vim.g.ansible_name_highlight = "b"
 vim.g.ansible_extra_keywords_highlight = 1
+vim.lsp.log.set_level("off")

@@ -1,121 +1,78 @@
+local parsers = {
+	"bash",
+	"c",
+	"cpp",
+	"cmake",
+	"css",
+	"html",
+	"javascript",
+	"json",
+	"lua",
+	"markdown",
+	"markdown_inline",
+	"python",
+	"query",
+	"regex",
+	"rust",
+	"svelte",
+	"toml",
+	"tsx",
+	"typescript",
+	"vim",
+	"vimdoc",
+	"yaml",
+}
+
 return {
 	{
 		"nvim-treesitter/nvim-treesitter",
-		branch = "master",
+		branch = "main",
 		lazy = false,
 		build = ":TSUpdate",
 		config = function()
-			-- Begin Markdown injection compatibility fix for Neovim 0.12.
-			-- nvim-treesitter's frozen master branch is not compatible with Neovim
-			-- 0.12's match shape for this legacy Markdown directive.
-			vim.treesitter.query.set(
-				"markdown",
-				"injections",
-				[[
-(fenced_code_block
-  (info_string
-    (language) @injection.language)
-  (code_fence_content) @injection.content)
+			require("nvim-treesitter").install(parsers)
 
-((html_block) @injection.content
-  (#set! injection.language "html")
-  (#set! injection.combined)
-  (#set! injection.include-children))
-
-((minus_metadata) @injection.content
-  (#set! injection.language "yaml")
-  (#offset! @injection.content 1 0 -1 0)
-  (#set! injection.include-children))
-
-((plus_metadata) @injection.content
-  (#set! injection.language "toml")
-  (#offset! @injection.content 1 0 -1 0)
-  (#set! injection.include-children))
-
-([
-  (inline)
-  (pipe_table_cell)
-] @injection.content
-  (#set! injection.language "markdown_inline"))
-]]
-			)
-			-- End Markdown injection compatibility fix for Neovim 0.12.
-
-			require("nvim-treesitter.configs").setup({
-				ensure_installed = {
-					"c",
-					"cpp",
-					"cmake",
-					"lua",
-					"rust",
-					"vim",
-					"vimdoc",
-					"query",
-					"markdown",
-					"markdown_inline",
-					"javascript",
-					"typescript",
-					"python",
-					"svelte",
-					"html",
-					"css",
-					"toml",
-				},
-				highlight = {
-					enable = true,
-				},
-				auto_install = true,
+			local group = vim.api.nvim_create_augroup("TreesitterHighlight", { clear = true })
+			vim.api.nvim_create_autocmd("FileType", {
+				group = group,
+				callback = function(args)
+					local lang = vim.treesitter.language.get_lang(vim.bo[args.buf].filetype)
+					if lang and vim.list_contains(parsers, lang) then
+						pcall(vim.treesitter.start, args.buf, lang)
+					end
+				end,
 			})
 		end,
 	},
 	{
 		"nvim-treesitter/nvim-treesitter-textobjects",
+		branch = "main",
 		dependencies = { "nvim-treesitter/nvim-treesitter" },
 		config = function()
-			require("nvim-treesitter.configs").setup({
-				textobjects = {
-					select = {
-						enable = true,
-
-						-- Automatically jump forward to textobj, similar to targets.vim
-						lookahead = true,
-
-						keymaps = {
-							-- You can use the capture groups defined in textobjects.scm
-							["af"] = "@function.outer",
-							["if"] = "@function.inner",
-							["ac"] = "@class.outer",
-							-- You can optionally set descriptions to the mappings (used in the desc parameter of
-							-- nvim_buf_set_keymap) which plugins like which-key display
-							["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
-							-- You can also use captures from other query groups like `locals.scm`
-							["as"] = { query = "@local.scope", query_group = "locals", desc = "Select language scope" },
-						},
-						-- You can choose the select mode (default is charwise 'v')
-						--
-						-- Can also be a function which gets passed a table with the keys
-						-- * query_string: eg '@function.inner'
-						-- * method: eg 'v' or 'o'
-						-- and should return the mode ('v', 'V', or '<c-v>') or a table
-						-- mapping query_strings to modes.
-						selection_modes = {
-							["@parameter.outer"] = "v", -- charwise
-							["@function.outer"] = "V", -- linewise
-							["@class.outer"] = "<c-v>", -- blockwise
-						},
-						-- If you set this to `true` (default is `false`) then any textobject is
-						-- extended to include preceding or succeeding whitespace. Succeeding
-						-- whitespace has priority in order to act similarly to eg the built-in
-						-- `ap`.
-						--
-						-- Can also be a function which gets passed a table with the keys
-						-- * query_string: eg '@function.inner'
-						-- * selection_mode: eg 'v'
-						-- and should return true or false
-						include_surrounding_whitespace = true,
+			require("nvim-treesitter-textobjects").setup({
+				select = {
+					lookahead = true,
+					selection_modes = {
+						["@parameter.outer"] = "v",
+						["@function.outer"] = "V",
+						["@class.outer"] = "<C-v>",
 					},
+					include_surrounding_whitespace = true,
 				},
 			})
+
+			local select = require("nvim-treesitter-textobjects.select").select_textobject
+			local function map_textobject(lhs, query, query_group, desc)
+				vim.keymap.set({ "x", "o" }, lhs, function()
+					select(query, query_group or "textobjects")
+				end, { desc = desc })
+			end
+
+			map_textobject("af", "@function.outer", nil, "Select outer function")
+			map_textobject("if", "@function.inner", nil, "Select inner function")
+			map_textobject("ac", "@class.outer", nil, "Select outer class")
+			map_textobject("ic", "@class.inner", nil, "Select inner class")
+			map_textobject("as", "@local.scope", "locals", "Select language scope")
 		end,
 	},
 }

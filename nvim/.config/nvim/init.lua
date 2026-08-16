@@ -1,3 +1,7 @@
+-- Disable netrw before loading nvim-tree.
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 -- Lazy should be here first
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -18,7 +22,9 @@ vim.opt.rtp:prepend(lazypath)
 
 vim.g.mapleader = " "
 
-require("lazy").setup("plugins")
+require("lazy").setup("plugins", {
+	rocks = { enabled = false },
+})
 
 require("vim-settings")
 require("key-mappings")

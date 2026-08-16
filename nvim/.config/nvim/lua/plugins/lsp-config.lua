@@ -1,6 +1,7 @@
 return {
 	{
 		"mason-org/mason-lspconfig.nvim",
+		event = { "BufReadPre", "BufNewFile" },
 		opts = {
 			ensure_installed = require("lsp-servers"),
 		},
@@ -11,8 +12,9 @@ return {
 	},
 	{
 		"lewis6991/hover.nvim",
+		lazy = true,
 		config = function()
-			require("hover").setup({
+			require("hover").config({
 				providers = {
 					"hover.providers.diagnostic",
 					"hover.providers.lsp",
@@ -40,6 +42,7 @@ return {
 	},
 	{
 		"neovim/nvim-lspconfig",
+		event = { "BufReadPre", "BufNewFile" },
 		config = function()
 			local capabilities = require("blink.cmp").get_lsp_capabilities()
 

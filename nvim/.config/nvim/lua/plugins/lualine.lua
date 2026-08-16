@@ -1,5 +1,6 @@
 return {
-	"nvim-lualine/lualine.nvim", dependencies = { "nvim-tree/nvim-web-devicons" },
+	"nvim-lualine/lualine.nvim",
+	dependencies = { "nvim-tree/nvim-web-devicons" },
 	config = function()
 		-- macro recording
 		local recording = {
@@ -23,11 +24,18 @@ return {
 				lualine_a = { "mode" },
 				lualine_b = { "branch" },
 				lualine_c = {
-					"filename",
+					{ "filename", path = 1 },
 					function()
+						local harpoon = package.loaded["harpoon"]
+						if not harpoon then
+							return ""
+						end
+
 						local path = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":p")
-						for _, item in ipairs(require("harpoon"):list().items or {}) do
-							if vim.fn.fnamemodify(item.value or "", ":p") == path then
+						local list = harpoon:list()
+						for i = 1, list:length() do
+							local item = list.items[i]
+							if item and vim.fn.fnamemodify(item.value or "", ":p") == path then
 								return "H"
 							end
 						end
@@ -42,7 +50,7 @@ return {
 			inactive_sections = {
 				lualine_a = {},
 				lualine_b = {},
-				lualine_c = { "filename" },
+				lualine_c = { { "filename", path = 1 } },
 				lualine_x = {},
 				lualine_y = {},
 				lualine_z = { "location" },

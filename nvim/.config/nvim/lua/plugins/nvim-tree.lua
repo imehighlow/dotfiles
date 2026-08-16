@@ -1,7 +1,7 @@
 return {
 	"nvim-tree/nvim-tree.lua",
 	version = "*",
-	lazy = false,
+	cmd = { "NvimTreeFindFileToggle", "NvimTreeToggle", "NvimTreeOpen" },
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 
 	config = function()
@@ -34,7 +34,6 @@ return {
 					context = { row = 1, col = 0 },
 				})
 			end, opts("Harpoon add"))
-
 		end
 
 		require("nvim-tree").setup({
