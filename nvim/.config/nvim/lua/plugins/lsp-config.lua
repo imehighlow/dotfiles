@@ -1,10 +1,5 @@
 return {
 	{
-		"mason-org/mason.nvim",
-		lazy = false,
-		opts = {},
-	},
-	{
 		"mason-org/mason-lspconfig.nvim",
 		opts = {
 			ensure_installed = require("lsp-servers"),
@@ -57,12 +52,6 @@ return {
 						[vim.diagnostic.severity.INFO] = " ",
 						[vim.diagnostic.severity.HINT] = " ",
 					},
-				},
-				virtual_text = {
-					prefix = "", -- no prefix
-					source = false, -- hide source name
-					spacing = 2,
-					virt_text_pos = "right_align", -- key: right side
 				},
 				underline = false,
 				update_in_insert = false,

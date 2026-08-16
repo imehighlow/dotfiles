@@ -92,7 +92,7 @@ map(
 	"<cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>",
 	{ desc = "telescope find all files" }
 )
-map("n", "<leader>b", function()
+local function show_buffers()
 	require("telescope.builtin").buffers({
 		initial_mode = "normal",
 		attach_mappings = function(_, map_telescope)
@@ -100,12 +100,14 @@ map("n", "<leader>b", function()
 			return true
 		end,
 	})
-end, { desc = "telescope show opened buffers" })
+end
 
--- treesj
-map("n", "<leader>tt", "<cmd>TSJToggle<CR>", { desc = "Toggle treesj" })
-map("n", "<leader>tj", "<cmd>TSJJoin<CR>", { desc = "Join code block" })
-map("n", "<leader>ts", "<cmd>TSJSplit<CR>", { desc = "Split code block" })
+map("n", "<leader>b", show_buffers, { desc = "Telescope: open buffers" })
+map("n", "T", show_buffers, { desc = "Telescope: open buffers" })
+
+-- buffers
+map("n", "<Tab>", "<cmd>bnext<CR>", { silent = true, desc = "Next buffer" })
+map("n", "<S-Tab>", "<cmd>bprevious<CR>", { silent = true, desc = "Previous buffer" })
 
 -- hover
 map("n", "K", function()
