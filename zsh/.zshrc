@@ -6,10 +6,13 @@ ZSH_THEME="minimal"
 plugins=(
     autoswitch_virtualenv
     zsh-syntax-highlighting
-    conda-zsh-completion
     fzf-tab
 )
 
+fpath+=~/.zfunc
+
+zstyle ':omz:update' mode disabled
+ZSH_DISABLE_COMPFIX=true
 source "$ZSH/oh-my-zsh.sh"
 
 alias vim=nvim
@@ -33,33 +36,10 @@ command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init --cmd cd zsh)"
 command -v uv >/dev/null 2>&1 && eval "$(uv generate-shell-completion zsh)"
 
 export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
-export NVM_DIR="$HOME/.nvm"
-
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
-
-# Prefer Homebrew GCC 15
-alias gcc="gcc-15"
-alias g++="g++-15"
-export CXX="g++"
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
-        . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-
-autoload -Uz bashcompinit
-bashcompinit
-eval "$(/opt/miniconda3/bin/conda shell.bash hook 2>/dev/null)"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/im/.lmstudio/bin"
+# End of LM Studio CLI section
+
