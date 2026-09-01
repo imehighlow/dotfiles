@@ -1,5 +1,6 @@
 # Packages expected to exist on supported Debian/Ubuntu releases
 build-essential
+ca-certificates
 cargo
 clang
 clang-format
@@ -7,7 +8,6 @@ cmake
 curl
 fd-find
 fzf
-gh
 git
 git-lfs
 neovim

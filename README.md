@@ -26,6 +26,8 @@ repair links and plugin revisions.
 On Debian-family systems, bootstrap continues when `apt update` has a partial
 failure caused by an unrelated third-party repository. APT's signature checks
 remain enabled; packages are installed only from indexes APT accepted.
+When `gh` is unavailable from the distribution, bootstrap adds GitHub CLI's
+official signed APT repository and installs it from there.
 
 Docker and other detected containers automatically use headless mode. To select
 it explicitly—for an OrbStack machine, for example—run:

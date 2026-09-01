@@ -23,6 +23,36 @@ apt_update() {
 	warn 'APT rejected the failed repository metadata; repair that source separately'
 }
 
+install_github_cli() {
+	if has gh; then
+		return 0
+	fi
+
+	info 'Installing GitHub CLI from its official APT repository'
+	if [ "$DOTFILES_DRY_RUN" -eq 1 ]; then
+		printf '%s\n' '+ add the signed GitHub CLI APT repository and install gh'
+		return 0
+	fi
+
+	gh_key_tmp=$(mktemp "${TMPDIR:-/tmp}/githubcli-keyring.XXXXXX")
+	gh_source_tmp=$(mktemp "${TMPDIR:-/tmp}/githubcli-source.XXXXXX")
+	trap 'rm -f "$gh_key_tmp" "$gh_source_tmp"' EXIT HUP INT TERM
+
+	curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg -o "$gh_key_tmp"
+	printf '%s  %s\n' \
+		'6084d5d7bd8e288441e0e94fc6275570895da18e6751f70f057485dc2d1a811b' \
+		"$gh_key_tmp" | sha256sum -c - >/dev/null
+
+	printf 'deb [arch=%s signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\n' \
+		"$(dpkg --print-architecture)" > "$gh_source_tmp"
+
+	run_as_root install -d -m 755 /etc/apt/keyrings /etc/apt/sources.list.d
+	run_as_root install -m 644 "$gh_key_tmp" /etc/apt/keyrings/githubcli-archive-keyring.gpg
+	run_as_root install -m 644 "$gh_source_tmp" /etc/apt/sources.list.d/github-cli.list
+	apt_update
+	run_as_root apt-get install -y gh
+}
+
 apt_update
 if [ "${ID:-}" = ubuntu ]; then
 	run_as_root apt-get install -y software-properties-common
@@ -39,6 +69,8 @@ while IFS= read -r package || [ -n "$package" ]; do
 done < "$DOTFILES_ROOT/packages/debian.txt"
 
 [ "$#" -gt 0 ] && run_as_root apt-get install -y "$@"
+
+install_github_cli
 
 while IFS= read -r package || [ -n "$package" ]; do
 	case "$package" in ''|'#'*) continue ;; esac
