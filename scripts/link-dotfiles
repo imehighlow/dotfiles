@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -eu
+. "${DOTFILES_ROOT:?}/scripts/lib.sh"
+
+if ! has stow; then
+	if [ "$DOTFILES_DRY_RUN" -eq 1 ]; then
+		printf '%s\n' '+ stow --no-folding --restow shared packages'
+		exit 0
+	fi
+	die 'GNU Stow is not installed; run ./bootstrap --only packages first'
+fi
+
+set -- zsh git tmux nvim clangd
+if [ "$(uname -s)" = Darwin ] && [ "$DOTFILES_HEADLESS" -eq 0 ]; then
+	set -- "$@" ghostty
+fi
+
+run stow --dir "$DOTFILES_ROOT" --target "$HOME" --no-folding --restow "$@"
+

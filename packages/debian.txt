@@ -1,0 +1,24 @@
+# Packages expected to exist on supported Debian/Ubuntu releases
+build-essential
+cargo
+clang
+clang-format
+cmake
+curl
+fd-find
+fzf
+gh
+git
+git-lfs
+neovim
+ninja-build
+nodejs
+npm
+python3
+python3-venv
+ripgrep
+rustfmt
+stow
+tmux
+unzip
+zsh

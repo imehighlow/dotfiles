@@ -1,3 +1,6 @@
+local vault_path = vim.env.OBSIDIAN_VAULT
+	or vim.fn.expand("~/Library/Mobile Documents/iCloud~md~obsidian/Documents/main")
+
 return {
 	"obsidian-nvim/obsidian.nvim",
 	version = "*",
@@ -8,8 +11,7 @@ return {
 		workspaces = {
 			{
 				name = "Main",
-				path = "/Users/im/Library/Mobile Documents/iCloud~md~obsidian/Documents/main",
-				-- path = "/Users/im/.obsidian/",
+				path = vault_path,
 			},
 		},
 		notes_subdir = "inbox",

@@ -1,0 +1,65 @@
+#!/bin/sh
+
+set -eu
+. "${DOTFILES_ROOT:?}/scripts/lib.sh"
+
+has git || die 'git is required to install plugins'
+
+xdg_config_home=${XDG_CONFIG_HOME:-$HOME/.config}
+zsh_custom=${ZSH_CUSTOM:-$HOME/.zsh-custom}
+
+plugin_target() {
+	kind=$1
+	name=$2
+	case "$kind" in
+		oh-my-zsh) printf '%s\n' "$HOME/.oh-my-zsh" ;;
+		zsh-theme) printf '%s\n' "$zsh_custom/themes/$name" ;;
+		zsh-plugin) printf '%s\n' "$zsh_custom/plugins/$name" ;;
+		tmux-plugin) printf '%s\n' "$xdg_config_home/tmux/plugins/$name" ;;
+		*) die "unknown plugin kind in plugins.txt: $kind" ;;
+	esac
+}
+
+install_plugin_repo() {
+	kind=$1
+	name=$2
+	repository=$3
+	target=$(plugin_target "$kind" "$name")
+
+	if [ ! -d "$target/.git" ]; then
+		if [ -e "$target" ]; then
+			die "$target exists but is not a Git checkout; move it aside and rerun bootstrap"
+		fi
+		run mkdir -p "$(dirname "$target")"
+		run git clone --filter=blob:none "$repository" "$target"
+	fi
+
+	run git -C "$target" pull --ff-only
+}
+
+while read -r kind name repository extra; do
+	case "$kind" in ''|'#'*) continue ;; esac
+	[ -z "${extra:-}" ] || die "invalid plugins.txt row for $name"
+	install_plugin_repo "$kind" "$name" "$repository"
+done < "$DOTFILES_ROOT/plugins.txt"
+
+theme_link=$zsh_custom/themes/minimal.zsh-theme
+theme_source=minimal/minimal.zsh
+if [ -L "$theme_link" ]; then
+	current_link=$(readlink "$theme_link")
+	case "$current_link" in
+		"$theme_source"|"$zsh_custom/themes/$theme_source") ;;
+		*) die "$theme_link points to $current_link instead of $theme_source" ;;
+	esac
+elif [ -e "$theme_link" ]; then
+	die "$theme_link already exists and is not a symlink"
+else
+	run ln -s "$theme_source" "$theme_link"
+fi
+
+# TPM owns loading and discovery; all configured plugins above are already
+# present, so this only fills in a newly declared missing plugin.
+tpm_installer=$xdg_config_home/tmux/plugins/tpm/bin/install_plugins
+if [ -x "$tpm_installer" ] && has tmux; then
+	run "$tpm_installer"
+fi

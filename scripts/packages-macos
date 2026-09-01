@@ -1,0 +1,45 @@
+#!/bin/sh
+
+set -eu
+. "${DOTFILES_ROOT:?}/scripts/lib.sh"
+
+find_brew() {
+	if has brew; then
+		command -v brew
+	elif [ -x /opt/homebrew/bin/brew ]; then
+		printf '%s\n' /opt/homebrew/bin/brew
+	elif [ -x /usr/local/bin/brew ]; then
+		printf '%s\n' /usr/local/bin/brew
+	else
+		return 1
+	fi
+}
+
+brew_bin=$(find_brew || true)
+if [ -z "$brew_bin" ]; then
+	info 'Homebrew is not installed; installing it'
+	if [ "$DOTFILES_DRY_RUN" -eq 1 ]; then
+		printf '%s\n' '+ download and run the official Homebrew installer'
+		exit 0
+	fi
+	installer=$(mktemp "${TMPDIR:-/tmp}/dotfiles-homebrew.XXXXXX")
+	trap 'rm -f "$installer"' EXIT HUP INT TERM
+	curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh -o "$installer"
+	if [ "$DOTFILES_HEADLESS" -eq 1 ]; then
+		NONINTERACTIVE=1 /bin/bash "$installer"
+	else
+		/bin/bash "$installer"
+	fi
+	brew_bin=$(find_brew || true)
+	[ -n "$brew_bin" ] || die 'Homebrew installation finished, but brew is not available'
+fi
+
+eval "$("$brew_bin" shellenv)"
+run "$brew_bin" bundle --file "$DOTFILES_ROOT/packages/Brewfile"
+if [ "$DOTFILES_HEADLESS" -eq 0 ]; then
+	run "$brew_bin" bundle --file "$DOTFILES_ROOT/packages/Brewfile.desktop"
+fi
+
+if has rustup && ! has rustc; then
+	run rustup default stable
+fi

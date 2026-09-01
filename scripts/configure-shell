@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -eu
+. "${DOTFILES_ROOT:?}/scripts/lib.sh"
+
+has zsh || die 'zsh is not installed'
+
+case $(uname -s) in
+	Darwin) desired_shell=/bin/zsh ;;
+	*) desired_shell=$(command -v zsh) ;;
+esac
+
+if [ "${SHELL:-}" != "$desired_shell" ]; then
+	info "Changing the login shell to $desired_shell"
+	if [ -r /etc/shells ] && ! grep -Fqx "$desired_shell" /etc/shells; then
+		warn "$desired_shell is not listed in /etc/shells; skipping chsh"
+	else
+		run chsh -s "$desired_shell"
+	fi
+fi
+

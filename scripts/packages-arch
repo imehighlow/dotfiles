@@ -1,0 +1,47 @@
+#!/bin/sh
+
+set -eu
+. "${DOTFILES_ROOT:?}/scripts/lib.sh"
+
+has pacman || die 'pacman is required on Arch Linux'
+
+set --
+while IFS= read -r package || [ -n "$package" ]; do
+	case "$package" in ''|'#'*) continue ;; esac
+	set -- "$@" "$package"
+done < "$DOTFILES_ROOT/packages/arch.txt"
+
+if [ "$DOTFILES_HEADLESS" -eq 0 ]; then
+	while IFS= read -r package || [ -n "$package" ]; do
+		case "$package" in ''|'#'*) continue ;; esac
+		set -- "$@" "$package"
+	done < "$DOTFILES_ROOT/packages/arch-desktop.txt"
+fi
+
+[ "$#" -gt 0 ] && run_as_root pacman -Syu --needed --noconfirm "$@"
+
+set --
+while IFS= read -r package || [ -n "$package" ]; do
+	case "$package" in ''|'#'*) continue ;; esac
+	set -- "$@" "$package"
+done < "$DOTFILES_ROOT/packages/aur.txt"
+
+if [ "$#" -gt 0 ]; then
+	if ! has yay; then
+		[ "$(id -u)" -ne 0 ] || die 'AUR packages cannot be built as root; run bootstrap as a regular user'
+		info 'Installing yay from the AUR'
+		if [ "$DOTFILES_DRY_RUN" -eq 1 ]; then
+			printf '%s\n' '+ build and install yay from https://aur.archlinux.org/yay-bin.git'
+		else
+			yay_build=$(mktemp -d "${TMPDIR:-/tmp}/dotfiles-yay.XXXXXX")
+			trap 'rm -rf "$yay_build"' EXIT HUP INT TERM
+			git clone https://aur.archlinux.org/yay-bin.git "$yay_build/yay-bin"
+			(cd "$yay_build/yay-bin" && makepkg -si --noconfirm)
+		fi
+	fi
+	run yay -S --needed --noconfirm "$@"
+fi
+
+if has rustup && ! has rustc; then
+	run rustup default stable
+fi

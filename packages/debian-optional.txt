@@ -1,0 +1,3 @@
+# Installed when available in the configured apt repositories
+git-delta
+zoxide

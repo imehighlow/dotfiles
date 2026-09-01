@@ -1,0 +1,26 @@
+#!/bin/sh
+
+set -eu
+. "${DOTFILES_ROOT:?}/scripts/lib.sh"
+
+kernel=$(uname -s)
+
+case "$kernel" in
+	Darwin)
+		exec "$DOTFILES_ROOT/scripts/packages-macos"
+		;;
+	Linux)
+		[ -r /etc/os-release ] || die 'Linux distribution could not be detected (/etc/os-release is missing)'
+		# shellcheck disable=SC1091
+		. /etc/os-release
+		case "${ID:-}:${ID_LIKE:-}" in
+			arch:*|*:*arch*) exec "$DOTFILES_ROOT/scripts/packages-arch" ;;
+			debian:*|ubuntu:*|*:*debian*|*:*ubuntu*) exec "$DOTFILES_ROOT/scripts/packages-debian" ;;
+			*) die "unsupported Linux distribution: ${ID:-unknown}; add an adapter in scripts/install-packages" ;;
+		esac
+		;;
+	*)
+		die "unsupported operating system: $kernel"
+		;;
+esac
+

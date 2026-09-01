@@ -1,0 +1,82 @@
+#!/bin/sh
+
+set -u
+
+DOTFILES_ROOT=${DOTFILES_ROOT:-$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)}
+export DOTFILES_ROOT
+. "$DOTFILES_ROOT/scripts/lib.sh"
+
+failures=0
+warnings=0
+
+pass() { printf '  [ok] %s\n' "$*"; }
+fail() { printf '  [!!] %s\n' "$*"; failures=$((failures + 1)); }
+note() { printf '  [--] %s\n' "$*"; warnings=$((warnings + 1)); }
+
+for command_name in git stow zsh tmux nvim fzf rg fd gh delta cmake node python3 rustfmt; do
+	if has "$command_name"; then
+		pass "$command_name"
+	else
+		fail "$command_name is missing"
+	fi
+done
+
+for command_name in uv zoxide; do
+	if has "$command_name"; then
+		pass "$command_name"
+	else
+		note "$command_name is unavailable (optional on some platforms)"
+	fi
+done
+
+if has nvim; then
+	if nvim --headless "+lua if vim.fn.has('nvim-0.11') == 0 then vim.cmd('cquit 1') end" '+qa' >/dev/null 2>&1; then
+		pass 'Neovim is 0.11 or newer'
+	else
+		fail 'Neovim 0.11 or newer is required'
+	fi
+fi
+
+mason_packages=${XDG_DATA_HOME:-$HOME/.local/share}/nvim/mason/packages
+mason_missing=0
+for package in clang-format clangd cmakelang cmake-language-server lua-language-server prettier pyright ruff rust-analyzer stylua svelte-language-server taplo typescript-language-server; do
+	[ -d "$mason_packages/$package" ] || mason_missing=$((mason_missing + 1))
+done
+if [ "$mason_missing" -eq 0 ]; then
+	pass 'configured Mason LSP servers and formatters are installed'
+else
+	fail "$mason_missing configured Mason tool(s) are missing"
+fi
+
+for target in "$HOME/.zshrc" "$HOME/.gitconfig" "$HOME/.config/tmux/tmux.conf" "$HOME/.config/nvim/init.lua"; do
+	if [ -L "$target" ]; then
+		pass "$target is managed by Stow"
+	else
+		fail "$target is not a symlink managed by Stow"
+	fi
+done
+
+xdg_config_home=${XDG_CONFIG_HOME:-$HOME/.config}
+zsh_custom=${ZSH_CUSTOM:-$HOME/.zsh-custom}
+
+plugin_target() {
+	case "$1" in
+		oh-my-zsh) printf '%s\n' "$HOME/.oh-my-zsh" ;;
+		zsh-theme) printf '%s\n' "$zsh_custom/themes/$2" ;;
+		zsh-plugin) printf '%s\n' "$zsh_custom/plugins/$2" ;;
+		tmux-plugin) printf '%s\n' "$xdg_config_home/tmux/plugins/$2" ;;
+	esac
+}
+
+while read -r kind name repository extra; do
+	case "$kind" in ''|'#'*) continue ;; esac
+	target=$(plugin_target "$kind" "$name")
+	if [ -d "$target/.git" ] && git -C "$target" diff --quiet && git -C "$target" diff --cached --quiet; then
+		pass "$name is installed"
+	else
+		fail "$name is missing or its worktree is incomplete"
+	fi
+done < "$DOTFILES_ROOT/plugins.txt"
+
+printf '\nDoctor: %s failure(s), %s warning(s)\n' "$failures" "$warnings"
+[ "$failures" -eq 0 ]

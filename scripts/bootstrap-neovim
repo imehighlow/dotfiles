@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -eu
+. "${DOTFILES_ROOT:?}/scripts/lib.sh"
+
+if ! has nvim; then
+	if [ "$DOTFILES_DRY_RUN" -eq 1 ]; then
+		printf '%s\n' '+ nvim --headless +Lazy! sync +qa'
+		exit 0
+	fi
+	die 'Neovim is not installed; run ./bootstrap --only packages first'
+fi
+
+run nvim --headless '+Lazy! sync' '+qa'
+run nvim --headless '+MasonToolsInstallSync' '+qa'
+

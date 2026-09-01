@@ -1,0 +1,3 @@
+# Add one AUR package name per line. yay is bootstrapped only when this file
+# contains at least one package.
+

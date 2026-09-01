@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -eu
+
+DOTFILES_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+export DOTFILES_ROOT
+
+"$DOTFILES_ROOT/bootstrap" --only plugins
+"$DOTFILES_ROOT/bootstrap" --only nvim
+
+printf '\n==> Plugins updated to their latest upstream versions\n'

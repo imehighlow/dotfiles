@@ -1,0 +1,11 @@
+# kind          name                     repository
+oh-my-zsh       oh-my-zsh                https://github.com/ohmyzsh/ohmyzsh.git
+zsh-theme       minimal                  https://github.com/subnixr/minimal.git
+zsh-plugin      autoswitch_virtualenv     https://github.com/MichaelAquilina/zsh-autoswitch-virtualenv.git
+zsh-plugin      zsh-syntax-highlighting  https://github.com/zsh-users/zsh-syntax-highlighting.git
+zsh-plugin      fzf-tab                  https://github.com/Aloxaf/fzf-tab.git
+tmux-plugin     tpm                      https://github.com/tmux-plugins/tpm.git
+tmux-plugin     tmux-sensible            https://github.com/tmux-plugins/tmux-sensible.git
+tmux-plugin     vim-tmux-navigator       https://github.com/christoomey/vim-tmux-navigator.git
+tmux-plugin     minimal-tmux-status      https://github.com/niksingh710/minimal-tmux-status.git
+tmux-plugin     tmux-sessionx            https://github.com/omerxx/tmux-sessionx.git

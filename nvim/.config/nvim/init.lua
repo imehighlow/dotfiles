@@ -24,6 +24,9 @@ vim.g.mapleader = " "
 
 require("lazy").setup("plugins", {
 	rocks = { enabled = false },
+	-- Keep the runtime lock outside the dotfiles repo. Bootstrap always runs a
+	-- sync, so new and existing machines update to current plugin versions.
+	lockfile = vim.fn.stdpath("state") .. "/lazy-lock.json",
 })
 
 require("vim-settings")

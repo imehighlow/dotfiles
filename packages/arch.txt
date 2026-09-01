@@ -1,0 +1,25 @@
+# Official Arch repositories
+base-devel
+clang
+cmake
+curl
+fd
+fzf
+github-cli
+git
+git-delta
+git-lfs
+neovim
+ninja
+nodejs
+npm
+python
+ripgrep
+rustup
+stow
+tmux
+unzip
+uv
+zoxide
+zsh
+

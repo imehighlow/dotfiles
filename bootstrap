@@ -1,0 +1,113 @@
+#!/bin/sh
+
+set -eu
+
+DOTFILES_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+export DOTFILES_ROOT
+
+# Make user-local tools and a freshly installed Apple Silicon Homebrew visible
+# to later bootstrap stages even when the invoking shell has not loaded .zshrc.
+PATH="$HOME/.local/bin:$HOME/.cargo/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
+export PATH
+
+DOTFILES_DRY_RUN=0
+DOTFILES_HEADLESS=0
+DOTFILES_ONLY=all
+
+usage() {
+	cat <<'EOF'
+Usage: ./bootstrap [options]
+
+Install packages, link dotfiles, install plugins, and verify the environment.
+
+Options:
+  --headless            Skip desktop-only configuration and changing the login shell
+  --dry-run             Print actions without changing the machine
+  --only STEP           Run one step: packages, links, plugins, nvim, or doctor
+  -h, --help            Show this help
+EOF
+}
+
+while [ "$#" -gt 0 ]; do
+	case "$1" in
+		--headless)
+			DOTFILES_HEADLESS=1
+			;;
+		--dry-run)
+			DOTFILES_DRY_RUN=1
+			;;
+		--only)
+			shift
+			[ "$#" -gt 0 ] || { printf '%s\n' 'bootstrap: --only requires a step' >&2; exit 2; }
+			DOTFILES_ONLY=$1
+			;;
+		--only=*)
+			DOTFILES_ONLY=${1#*=}
+			;;
+		-h|--help)
+			usage
+			exit 0
+			;;
+		*)
+			printf 'bootstrap: unknown option: %s\n' "$1" >&2
+			usage >&2
+			exit 2
+			;;
+	esac
+	shift
+done
+
+case "$DOTFILES_ONLY" in
+	all|packages|links|plugins|nvim|doctor) ;;
+	*)
+		printf 'bootstrap: invalid step: %s\n' "$DOTFILES_ONLY" >&2
+		exit 2
+		;;
+esac
+
+if [ -f /.dockerenv ] || [ -f /run/.containerenv ]; then
+	DOTFILES_HEADLESS=1
+fi
+
+export DOTFILES_DRY_RUN DOTFILES_HEADLESS DOTFILES_ONLY
+
+. "$DOTFILES_ROOT/scripts/lib.sh"
+
+run_step() {
+	[ "$DOTFILES_ONLY" = all ] || [ "$DOTFILES_ONLY" = "$1" ]
+}
+
+if run_step packages; then
+	info 'Installing system packages'
+	"$DOTFILES_ROOT/scripts/install-packages"
+fi
+
+if run_step links; then
+	info 'Linking dotfiles with GNU Stow'
+	"$DOTFILES_ROOT/scripts/link-dotfiles"
+fi
+
+if run_step plugins; then
+	info 'Installing current shell and tmux plugins'
+	"$DOTFILES_ROOT/scripts/install-plugins"
+fi
+
+if run_step nvim; then
+	info 'Bootstrapping Neovim plugins and tools'
+	"$DOTFILES_ROOT/scripts/bootstrap-neovim"
+fi
+
+if [ "$DOTFILES_ONLY" = all ] && [ "$DOTFILES_HEADLESS" -eq 0 ]; then
+	"$DOTFILES_ROOT/scripts/configure-shell"
+fi
+
+if run_step doctor || [ "$DOTFILES_ONLY" = all ]; then
+	info 'Checking the installed environment'
+	if [ "$DOTFILES_DRY_RUN" -eq 1 ]; then
+		info 'Skipping doctor during a dry run'
+	else
+		"$DOTFILES_ROOT/scripts/doctor"
+	fi
+fi
+
+info 'Bootstrap complete'

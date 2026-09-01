@@ -1,0 +1,56 @@
+#!/bin/sh
+
+set -eu
+. "${DOTFILES_ROOT:?}/scripts/lib.sh"
+
+has apt-get || die 'apt-get is required on Debian/Ubuntu'
+
+PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+export PATH
+
+# Neovim 0.11+ is required by this configuration. Ubuntu's Neovim PPA keeps
+# the package recent while still allowing apt to own it.
+# shellcheck disable=SC1091
+. /etc/os-release
+run_as_root apt-get update
+if [ "${ID:-}" = ubuntu ]; then
+	run_as_root apt-get install -y software-properties-common
+	if ! grep -Rqs 'neovim-ppa.*unstable' /etc/apt/sources.list /etc/apt/sources.list.d 2>/dev/null; then
+		run_as_root add-apt-repository -y ppa:neovim-ppa/unstable
+		run_as_root apt-get update
+	fi
+fi
+
+set --
+while IFS= read -r package || [ -n "$package" ]; do
+	case "$package" in ''|'#'*) continue ;; esac
+	set -- "$@" "$package"
+done < "$DOTFILES_ROOT/packages/debian.txt"
+
+[ "$#" -gt 0 ] && run_as_root apt-get install -y "$@"
+
+while IFS= read -r package || [ -n "$package" ]; do
+	case "$package" in ''|'#'*) continue ;; esac
+	if apt-cache show "$package" >/dev/null 2>&1; then
+		run_as_root apt-get install -y "$package"
+	else
+		warn "optional apt package is unavailable: $package"
+	fi
+done < "$DOTFILES_ROOT/packages/debian-optional.txt"
+
+if ! has delta; then
+	info 'git-delta is unavailable through apt; installing the latest release with Cargo'
+	run cargo install --locked git-delta
+	run mkdir -p "$HOME/.local/bin"
+	if [ ! -e "$HOME/.local/bin/delta" ]; then
+		run ln -s "$HOME/.cargo/bin/delta" "$HOME/.local/bin/delta"
+	fi
+fi
+
+# Debian calls fd(1) "fdfind" to avoid a package-name collision.
+if ! has fd && has fdfind; then
+	run mkdir -p "$HOME/.local/bin"
+	if [ ! -e "$HOME/.local/bin/fd" ]; then
+		run ln -s "$(command -v fdfind)" "$HOME/.local/bin/fd"
+	fi
+fi
