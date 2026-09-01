@@ -21,6 +21,11 @@ repair links and plugin revisions.
 | Arch Linux | `pacman`; `yay` is bootstrapped when `packages/aur.txt` is nonempty |
 | Ubuntu | `apt` plus the Neovim unstable PPA |
 | Debian | `apt` (Neovim 0.11+ must be available in the configured repositories) |
+| Kali Linux | `apt` from Kali Rolling |
+
+On Debian-family systems, bootstrap continues when `apt update` has a partial
+failure caused by an unrelated third-party repository. APT's signature checks
+remain enabled; packages are installed only from indexes APT accepted.
 
 Docker and other detected containers automatically use headless mode. To select
 it explicitly—for an OrbStack machine, for example—run:

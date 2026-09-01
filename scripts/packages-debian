@@ -12,12 +12,23 @@ export PATH
 # the package recent while still allowing apt to own it.
 # shellcheck disable=SC1091
 . /etc/os-release
-run_as_root apt-get update
+
+apt_update() {
+	if run_as_root apt-get update; then
+		return 0
+	fi
+
+	warn 'apt update reported an error in one or more configured repositories'
+	warn 'continuing with indexes from repositories that APT updated successfully'
+	warn 'APT rejected the failed repository metadata; repair that source separately'
+}
+
+apt_update
 if [ "${ID:-}" = ubuntu ]; then
 	run_as_root apt-get install -y software-properties-common
 	if ! grep -Rqs 'neovim-ppa.*unstable' /etc/apt/sources.list /etc/apt/sources.list.d 2>/dev/null; then
 		run_as_root add-apt-repository -y ppa:neovim-ppa/unstable
-		run_as_root apt-get update
+		apt_update
 	fi
 fi
 
