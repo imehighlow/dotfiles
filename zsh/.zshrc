@@ -41,8 +41,8 @@ fi
 
 obsidian_dir="$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/main"
 if [[ -d "$obsidian_dir" ]]; then
-    cdo() { cd "$obsidian_dir" }
-    vimo() { cd "$obsidian_dir" && nvim }
+    cdo() { cd "$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/main"; }
+    vimo() { cdo && nvim; }
 fi
 unset obsidian_dir
 
