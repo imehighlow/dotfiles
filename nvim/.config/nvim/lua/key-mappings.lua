@@ -121,6 +121,7 @@ map("n", "<leader>b", show_buffers, { desc = "Telescope: open buffers" })
 map("n", "T", show_buffers, { desc = "Telescope: open buffers" })
 
 -- buffers
+map("n", "<leader>x", "<cmd>bdelete<CR>", { silent = true, desc = "Close current buffer" })
 map("n", "<Tab>", "<cmd>bnext<CR>", { silent = true, desc = "Next buffer" })
 map("n", "<S-Tab>", "<cmd>bprevious<CR>", { silent = true, desc = "Previous buffer" })
 
