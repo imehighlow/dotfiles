@@ -10,6 +10,15 @@ local servers = {
 }
 
 servers.configs = {
+	rust_analyzer = {
+		settings = {
+			["rust-analyzer"] = {
+				diagnostics = {
+					disabled = { "inactive_code" },
+				},
+			},
+		},
+	},
 	cmake = {
 		init_options = {
 			buildDirectory = "build",
